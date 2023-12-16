@@ -8,12 +8,30 @@ const port = 5000;
 
 app.use(cors());
 
+app.get("/search",async (req,res) => {
+    const response = await axios.get(`https://mangaid.click/search?query=${req.query.query}`)
+    return res.json(response.data.suggestions);
+})  
+
+app.get("/genre",async (req,res) => {
+    const response = await axios.get(`https://mangaid.click/manga-list?page=1&sortBy=views`);
+    const $ = cheerio.load(response.data);
+    const data = [];
+    $(".list-category").find("li").each((index,element) => {
+        data.push({
+            nama:$(element).find("a").text(),
+            id:index + 1
+        })
+    });
+    return res.json(data);
+})
+
 app.get("/manga",async (req,res) => {
-    const response = await axios.get(`https://mangaid.click/manga-list?page=${req.query.page || 1}`);
+    const response = await axios.get(`https://mangaid.click/filterList?page=${req.query.page || 1}&cat=${req.query.cat || ""}&alpha=&sortBy=views&asc=${false}&author=&artist=&tag=`);
     const $ = cheerio.load(response.data);
     const data = [];
     let gambar,judul,genre,slug;
-    $(".content").find(".col-sm-6").each((index,element) => {
+    $("body").find(".col-sm-6").each((index,element) => {
         gambar = $(element).find("div > div > a > img").attr("src");
         judul = $(element).find("div > .media-body > h5 > a > strong").text();
         genre = $(element).find(`div > .media-body > div`).eq(2).text();
@@ -40,12 +58,11 @@ app.get("/manga/:slug",async (req,res) => {
     });
     const data = {
         gambar : $(".boxed").find("img").attr("src"),
-        nama : $(".dl-horizontal").find("dd").eq(1).text(),
         status : $(".dl-horizontal").find("dd > span").text(),
-        author: $(".dl-horizontal").find("dd").eq(2).text(),
-        rilis: $(".dl-horizontal").find("dd").eq(3).text(),
-        genre: $(".dl-horizontal").find("dd").eq(4).text(),
-        views: $(".dl-horizontal").find("dd").eq(5).text(),
+        nama: $(".dl-horizontal").find("dd").eq(2).text(),
+        author: $(".dl-horizontal").find("dd").eq(3).text(),
+        rilis: $(".dl-horizontal").find("dd").eq(4).text(),
+        genre: $(".dl-horizontal").find("dd").eq(5).text(),
         deskripsi : $(".well").find("p").text(),
         chapters,
     }
@@ -61,7 +78,12 @@ app.get("/manga/:slug/:chapter",async (req,res) => {
             gambar : $(element).attr("data-src"),
         });
     });
-    return res.json(data);
+    console.log($(".next").text())
+    return res.json({
+        next:$("li > .next").text() ? true : false,
+        left:$(".previous").text() ? true : false,
+        images:data
+    });
 });
 
 app.get("/gambar",async (req,res) => {

@@ -13,16 +13,15 @@ export default function Chapter () {
 
     async function getdata() {
         const data = await axios.get(`http://localhost:5000/manga/${slug}/${chapterKe}`);
-        setChapter(data.data);
+        console.log(data.data)
+        setChapter(data.data.images);
     }
 
     return <div className="container mt-5">
         <div className="row justify-content-center">
             {chapter.map((image,index) => 
-            <div className="col-md-10" key={index}>
-                <div className="">
-                    <img src={`http://localhost:5000/gambar?url=${image.gambar}`} className="img-fluid" alt={index} />
-                </div>
+            <div className="col-md-12 border d-flex justify-content-center" key={index}>
+                <img src={`http://localhost:5000/gambar?url=${image.gambar}`} className="img-fluid" alt={index} />
             </div>
             )}
         </div>
