@@ -52,4 +52,26 @@ app.get("/manga/:slug",async (req,res) => {
     return res.json(data)
 })
 
+app.get("/manga/:slug/:chapter",async (req,res) => {
+    const response = await axios.get(`https://mangaid.click/manga/${req.params.slug}/${req.params.chapter}/1`);
+    const $ = cheerio.load(response.data);
+    const data = [];
+    $("#all").find("img").each((index,element) => {
+        data.push({
+            gambar : $(element).attr("data-src"),
+        });
+    });
+    return res.json(data);
+});
+
+app.get("/gambar",async (req,res) => {
+    try{ 
+        const response = await axios.get(req.query.url,{ responseType: 'arraybuffer' });
+        res.header('Content-Type', 'image/jpeg');
+        return res.send(response.data);
+    }catch(e){
+        return res.send("bukan gambar");
+    }
+})
+ 
 app.listen(5000,() => console.log("Berjalan di http://localhost:5000/"));

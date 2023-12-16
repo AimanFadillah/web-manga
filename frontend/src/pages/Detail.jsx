@@ -12,13 +12,12 @@ export default function Detail () {
 
     async function getdata() {
         const data = await axios.get(`http://localhost:5000/manga/${slug}`);
-        console.log(data)
         setManga(data.data);
     }
 
     return <div className="container mt-5">
         {manga ? 
-        <div className="row">
+        <div className="row ">
             <div className="col-md-12 d-flex justify-content-center">
                 <img src={manga.gambar} alt={manga.nama} className="shadow rounded mb-3 border" />
             </div>
@@ -42,7 +41,7 @@ export default function Detail () {
                     <ul className="list-group list-group-flush">
                         {manga.chapters.map((chapter,index) => 
                         <li className="list-group-item" key={index}>
-                            <a class="fw-bold text-decoration-none">{chapter.nama}</a>
+                            <a href={`/detail/${slug}/${chapter.slug}`} class="fw-bold text-decoration-none">{chapter.nama}</a>
                         </li>
                         )}
                     </ul>
