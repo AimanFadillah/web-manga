@@ -5,11 +5,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function Chapter () {
     const slug = useParams().slug;
-    const [chapterKe,setChapterKe] = useState(useParams().chapter);
     const [chapter,setChapter] = useState([]);
-    const [chapters,setChapters] = useState([]);
+    const [chapterKe,setChapterKe] = useState(useParams().chapter);
     const [indexC,setIndexC] = useState();
     const [time,setTime] = useState();
+    const [manga,setManga] = useState({
+        chapters:[]
+    });
 
     useEffect(() => {
         getChapters()
@@ -18,13 +20,14 @@ export default function Chapter () {
 
     async function getdata() {
         clearTimeout(time);
-        const indexChapter = chapters[indexC] ? chapters[indexC].slug : chapterKe;
+        const indexChapter = manga.chapters[indexC] ? manga.chapters[indexC].slug : chapterKe;
         if(indexC && indexC < 0 || indexC == 0) return false;
         const tm = setTimeout(async () => {
             try{
                 const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}/${indexChapter}`);
                 setChapter([...chapter,{gambar:`Chapter ${indexChapter}`},...data.data]);
                 indexC ? setIndexC(indexC - 1) : "";
+                if(manga.chapters.length != 0) setHistory(indexChapter);
             }catch(e){
                 return mode404()
             }
@@ -35,7 +38,30 @@ export default function Chapter () {
     async function getChapters () {
         const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}`);
         response.data.chapters.map((chapter,loop) =>  chapter.slug === chapterKe ? setIndexC(loop - 1) : "");
-        setChapters(response.data.chapters);
+        setManga(response.data);
+        setHistory(undefined,response.data);
+    }
+
+    async function setHistory (slugChapter = chapterKe,data = manga) {
+        let historys = JSON.parse(localStorage.getItem("historys")) || [];
+        const history = {
+            gambar:data.gambar,
+            judul:data.nama,
+            genre:data.genre,
+            slug:slug,
+            slugChapter,
+        }
+        const checkData = historys.find((ht) => ht.slug == history.slug);
+        if(checkData){
+            const index = historys.findIndex((ht) => ht.slug == history.slug);
+            historys.splice(index,1);
+            historys = [history,...historys];
+            localStorage.setItem("historys",JSON.stringify(historys))
+        }else{
+            if(historys.length >= 20) historys.pop()
+            historys = [history,...historys];
+            localStorage.setItem("historys",JSON.stringify(historys))
+        }
     }
 
     return <div className="container">

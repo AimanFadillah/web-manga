@@ -65,7 +65,7 @@ app.get("/manga/:slug",async (req,res) => {
         const data = {
             gambar : $(".boxed").find("img").attr("src"),
             status : $(".dl-horizontal").find("dd > span").text(),
-            nama: $(".dl-horizontal").find("dd").eq(2).text(),
+            nama: $("h1.widget-title").text(),
             author: $(".dl-horizontal").find("dd").eq(3).text(),
             rilis: $(".dl-horizontal").find("dd").eq(4).text(),
             genre: $(".dl-horizontal").find("dd").eq(5).text(),

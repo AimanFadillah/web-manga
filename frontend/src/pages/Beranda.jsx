@@ -55,7 +55,7 @@ export default function Beranda () {
                     )}
                 </select>
             </div>
-            <div className="col-md-2 col-4 p-0 me-2">
+            <div className="col-md-2 col-3 p-0 me-2">
                 <select onChange={(e) => setQuery(e.target.value)} className="form-select" aria-label="Default select example">
                     <option value="sortBy=views&asc=false" >Tertinggi</option>
                     <option value="sortBy=views&asc=true" >Terendah</option>
@@ -63,9 +63,10 @@ export default function Beranda () {
                     <option value="sortBy=name&asc=false" >Z - A</option>
                 </select>
             </div>
-            <div className="col-md-1 d-flex col-3 p-0 align-items-center">
+            <div className="col-md-2 d-flex col-4 p-0 align-items-center">
                 <div className={`spinner-border me-2 text-primary ${loading ? ""  : "d-none"}`} role="status"></div>
                 <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i className="bi bi-search"></i></button>
+                <Link className="btn btn-primary ms-1" to={"/history"} ><i className="bi bi-clock-history"></i></Link>
             </div>
         </div>
         <InfiniteScroll
