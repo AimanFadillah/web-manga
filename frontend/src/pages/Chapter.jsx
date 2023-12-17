@@ -20,7 +20,6 @@ export default function Chapter () {
         clearTimeout(time);
         const indexChapter = chapters[indexC] ? chapters[indexC].slug : chapterKe;
         if(indexC && indexC <= 0) return false
-        window.history.pushState("", "", `/detail/${slug}/${indexChapter}`);
         const tm = setTimeout(async () => {
             try{
                 const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}/${indexChapter}`);
@@ -48,7 +47,7 @@ export default function Chapter () {
             >
             {chapter.map((image,index) => 
                 <div className="col-md-12 p-0 d-flex justify-content-center" key={index}>
-                    {image.gambar.includes("https") ?
+                    {!image.gambar.includes("Chapter") ?
                     <img src={`https://mangapi.aimanfadillah.repl.co/gambar?url=${image.gambar}`} className="img-fluid" alt={index} />
                     : 
                     <h1>{image.gambar}</h1>

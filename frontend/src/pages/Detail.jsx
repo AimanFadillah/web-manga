@@ -46,7 +46,7 @@ export default function Detail () {
                     <ul className="list-group list-group-flush">
                         {manga.chapters.map((chapter,index) => 
                         <li className="list-group-item" key={index}>
-                            <Link to={`/detail/${slug}/${chapter.slug}`} className="fw-bold text-decoration-none">{chapter.nama}</Link>
+                            <Link to={`/manga/${slug}/${chapter.slug}`} className="fw-bold text-decoration-none">{chapter.nama}</Link>
                         </li>
                         )}
                     </ul>

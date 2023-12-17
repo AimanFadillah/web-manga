@@ -12,7 +12,7 @@ export default function Beranda () {
     const [loading,setLoading] = useState(false);
     const [search,setSearch] = useState("");
     const [resultS,setResults] = useState([]);
-    const [query,setQuery] = useState("sortBy=views&asc=false");
+    const [query,setQuery] = useState();
     const nav = useNavigate();
 
     useEffect(() => {
@@ -27,7 +27,7 @@ export default function Beranda () {
         setLoading(true);
         clearTimeout(time);
         const tm = setTimeout(async () => {
-            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${pagination}&cat=${cat}&${query}`);
+            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${pagination}&cat=${cat}&${query || "sortBy=views&asc=false"}`);
             setMangas(reset ? data.data : [...mangas,...data.data]);
             setPage(reset ? 1 : page + 1);
             setLoading(false);
@@ -77,7 +77,7 @@ export default function Beranda () {
             {mangas.map((manga,index) => 
             <div key={index} className="col-md-3 col-6 mb-3">
                 <div>
-                    <Link className="card shadow text-decoration-none" to={`/detail/${manga.slug}`}>
+                    <Link className="card shadow text-decoration-none" to={`/manga/${manga.slug}`}>
                         <img src={manga.gambar} height={"350"} className="card-img-top" alt="tesst" />
                         <div className="card-body">
                             <h5 className="card-title">{manga.judul}</h5>
@@ -103,7 +103,7 @@ export default function Beranda () {
                     <div className="modal-body">
                         <input type="text" onChange={(e) => setSearch(e.target.value)} className="form-control mb-3" placeholder="Cari Manga" />
                         {resultS.map((result,index) => 
-                        <Link onClick={() => nav(`/detail/${result.data}`)} key={index} data-bs-dismiss="modal" data-bs-target="#my-modal" aria-label="Close"  className="mb-1 bg-primary text-white p-1 px-3 text-decoration-none d-block rounded" >
+                        <Link onClick={() => nav(`/manga/${result.data}`)} key={index} data-bs-dismiss="modal" data-bs-target="#my-modal" aria-label="Close"  className="mb-1 bg-primary text-white p-1 px-3 text-decoration-none d-block rounded" >
                             {result.value}
                         </Link>
                         )}
