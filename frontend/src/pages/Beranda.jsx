@@ -27,9 +27,9 @@ export default function Beranda () {
         setLoading(true);
         clearTimeout(time);
         const tm = setTimeout(async () => {
-            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${pagination}&cat=${cat}&${query || "sortBy=views&asc=false"}`);
+            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${reset ? 1 : pagination}&cat=${cat}&${query || "sortBy=views&asc=false"}`);
             setMangas(reset ? data.data : [...mangas,...data.data]);
-            setPage(reset ? 1 : page + 1);
+            setPage(reset ? 2 : page + 1);
             setLoading(false);
         },pagination == 1 ? 0 : 500);
         setTime(tm);

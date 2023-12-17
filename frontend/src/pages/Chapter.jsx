@@ -19,7 +19,7 @@ export default function Chapter () {
     async function getdata() {
         clearTimeout(time);
         const indexChapter = chapters[indexC] ? chapters[indexC].slug : chapterKe;
-        if(indexC && indexC <= 0) return false
+        if(indexC && indexC < 0 || indexC == 0) return false;
         const tm = setTimeout(async () => {
             try{
                 const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}/${indexChapter}`);
@@ -43,6 +43,7 @@ export default function Chapter () {
             dataLength={chapter.length}
             hasMore={true}
             className="row justify-content-center"
+            scrollThreshold="200px"
             next={getdata}
             >
             {chapter.map((image,index) => 
