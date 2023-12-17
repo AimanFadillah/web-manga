@@ -11,11 +11,12 @@ export default function Beranda () {
     const [loading,setLoading] = useState(false);
     const [search,setSearch] = useState("");
     const [resultS,setResults] = useState([]);
+    const [query,setQuery] = useState("sortBy=views&asc=false");
 
     useEffect(() => {
-        cat ? getdata(undefined,true) : getdata(); 
+        cat || query ? getdata(undefined,true) : getdata(); 
         getGenres();
-    },[cat])
+    },[cat,query])
 
     useEffect(() => getSearch,[search])
 
@@ -23,7 +24,7 @@ export default function Beranda () {
         setLoading(true);
         clearTimeout(time);
         const tm = setTimeout(async () => {
-            const data = await axios.get(`http://localhost:5000/manga?page=${pagination}&cat=${cat}`);
+            const data = await axios.get(`http://localhost:5000/manga?page=${pagination}&cat=${cat}&${query}`);
             setMangas(reset ? data.data : [...mangas,...data.data]);
             setPage(reset ? 1 : page + 1);
             setLoading(false);
@@ -43,12 +44,20 @@ export default function Beranda () {
 
     return <div className="container mt-5" >
         <div className="row mb-3">
-            <div className="col-md-2 col-5">
+            <div className="col-md-2 col-4">
                 <select onChange={(e) => setCat(e.target.value)} className="form-select" aria-label="Default select example">
                     <option value={""} >Genre</option>
                     {genres.map((genre,index) => 
                         <option value={genre.id} key={index}>{genre.nama}</option>
                     )}
+                </select>
+            </div>
+            <div className="col-md-2 col-4 p-0 me-2">
+                <select onChange={(e) => setQuery(e.target.value)} className="form-select" aria-label="Default select example">
+                    <option value="sortBy=views&asc=false" >Tertinggi</option>
+                    <option value="sortBy=views&asc=true" >Terendah</option>
+                    <option value="sortBy=name&asc=true" >A - Z</option>
+                    <option value="sortBy=name&asc=false" >Z - A</option>
                 </select>
             </div>
             <div className="col-md-1 d-flex col-3 p-0 align-items-center">
@@ -69,7 +78,7 @@ export default function Beranda () {
                         <img src={manga.gambar} height={"350"} className="card-img-top" alt="tesst" />
                         <div className="card-body">
                             <h5 className="card-title">{manga.judul}</h5>
-                            <p className="card-text">{manga.genre}</p>
+                            <p className="card-text text-secondary">{manga.genre}</p>
                         </div>
                     </a>
                 </div>

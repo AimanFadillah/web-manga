@@ -20,7 +20,7 @@ app.get("/genre",async (req,res) => {
     $(".list-category").find("li").each((index,element) => {
         data.push({
             nama:$(element).find("a").text(),
-            id:index + 1
+            id:($(element).find("a").attr("href")).split("?cat=")[1],
         })
     });
     return res.json(data);
@@ -28,7 +28,8 @@ app.get("/genre",async (req,res) => {
 
 app.get("/manga",async (req,res) => {
     try{
-        const response = await axios.get(`https://mangaid.click/filterList?page=${req.query.page || 1}&cat=${req.query.cat || ""}&alpha=&sortBy=views&asc=${false}&author=&artist=&tag=`);
+        const response = await axios.get(`
+        https://mangaid.click/filterList?page=${req.query.page || 1}&cat=${req.query.cat || ""}&alpha=&sortBy=${req.query.sortBy || "views"}&asc=${req.query.asc || false}&author=&artist=&tag=`);
         const $ = cheerio.load(response.data);
         const data = [];
         let gambar,judul,genre,slug;

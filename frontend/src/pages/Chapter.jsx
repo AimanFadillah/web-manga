@@ -20,7 +20,7 @@ export default function Chapter () {
         clearTimeout(time);
         const indexChapter = chapters[indexC] ? chapters[indexC].slug : chapterKe;
         if(indexC && indexC <= 0) return false
-        window.history.pushState("", "", `/detail/boruto-naruto-next-generations/${indexChapter}`);
+        window.history.pushState("", "", `/detail/${slug}/${indexChapter}`);
         const tm = setTimeout(async () => {
             try{
                 const data = await axios.get(`http://localhost:5000/manga/${slug}/${indexChapter}`);
