@@ -5,6 +5,14 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mangaman</title>
+    <script>
+      function mode404() {
+        return document.querySelector(".container").innerHTML = `
+          <h1 class="text-center mt-5" >Halaman Tidak ditemukan</h1>
+          <h1 class="text-center" >404</h1>
+        `
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

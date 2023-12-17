@@ -11,8 +11,12 @@ export default function Detail () {
     },[]);
 
     async function getdata() {
-        const data = await axios.get(`http://localhost:5000/manga/${slug}`);
-        setManga(data.data);
+        try{
+            const data = await axios.get(`http://localhost:5000/manga/${slug}`);
+            setManga(data.data);
+        }catch(e){
+            return mode404();
+        }
     }
 
     return <div className="container mt-5">
@@ -51,7 +55,7 @@ export default function Detail () {
         </div>
         : <div className="row ">
             <div className="col-md-12 d-flex justify-content-center">
-                <div className="spinner-border text-primary" style={{width:"5rem",height:"5rem"}} role="status"></div>
+                <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
             </div>
         </div>}
     </div>

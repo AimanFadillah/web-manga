@@ -76,12 +76,17 @@ export default function Beranda () {
             </div>
             )}      
         </InfiniteScroll>
+        <div className="row ">
+            <div className="col-md-12 d-flex justify-content-center mt-3">
+                <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
+            </div>
+        </div>
 
         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">
-                    <div class="modal-header d-block d-md-none p -0">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div className="modal-header d-block d-md-none p -0">
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
                         <input type="text" onChange={(e) => setSearch(e.target.value)} className="form-control mb-3" placeholder="Cari Manga" />
