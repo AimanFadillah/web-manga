@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 
 export default function Detail () {
     const slug = useParams().slug;
@@ -12,7 +12,7 @@ export default function Detail () {
 
     async function getdata() {
         try{
-            const data = await axios.get(`http://localhost:5000/manga/${slug}`);
+            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}`);
             setManga(data.data);
         }catch(e){
             return mode404();
@@ -46,7 +46,7 @@ export default function Detail () {
                     <ul className="list-group list-group-flush">
                         {manga.chapters.map((chapter,index) => 
                         <li className="list-group-item" key={index}>
-                            <a href={`/detail/${slug}/${chapter.slug}`} className="fw-bold text-decoration-none">{chapter.nama}</a>
+                            <Link to={`/detail/${slug}/${chapter.slug}`} className="fw-bold text-decoration-none">{chapter.nama}</Link>
                         </li>
                         )}
                     </ul>
@@ -58,6 +58,6 @@ export default function Detail () {
                 <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
             </div>
         </div>}
-    </div>
+    </div> 
 
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Beranda () {
     const [mangas,setMangas] = useState([]);
@@ -12,6 +13,7 @@ export default function Beranda () {
     const [search,setSearch] = useState("");
     const [resultS,setResults] = useState([]);
     const [query,setQuery] = useState("sortBy=views&asc=false");
+    const nav = useNavigate();
 
     useEffect(() => {
         cat || query ? getdata(undefined,true) : getdata(); 
@@ -24,7 +26,7 @@ export default function Beranda () {
         setLoading(true);
         clearTimeout(time);
         const tm = setTimeout(async () => {
-            const data = await axios.get(`http://localhost:5000/manga?page=${pagination}&cat=${cat}&${query}`);
+            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${pagination}&cat=${cat}&${query}`);
             setMangas(reset ? data.data : [...mangas,...data.data]);
             setPage(reset ? 1 : page + 1);
             setLoading(false);
@@ -33,12 +35,12 @@ export default function Beranda () {
     }
 
     async function getGenres() {
-        const response = await axios.get("http://localhost:5000/genre");
+        const response = await axios.get("https://mangapi.aimanfadillah.repl.co/genre");
         setGenres(response.data);
     }
 
     async function getSearch () {
-        const response = await axios.get(`http://localhost:5000/search?query=${search}`);
+        const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/search?query=${search}`);
         setResults(response.data);
     }
 
@@ -74,13 +76,13 @@ export default function Beranda () {
             {mangas.map((manga,index) => 
             <div key={index} className="col-md-3 col-6 mb-3">
                 <div>
-                    <a className="card shadow text-decoration-none" href={`/detail/${manga.slug}`}>
+                    <Link className="card shadow text-decoration-none" to={`/detail/${manga.slug}`}>
                         <img src={manga.gambar} height={"350"} className="card-img-top" alt="tesst" />
                         <div className="card-body">
                             <h5 className="card-title">{manga.judul}</h5>
                             <p className="card-text text-secondary">{manga.genre}</p>
                         </div>
-                    </a>
+                    </Link>
                 </div>
             </div>
             )}      
@@ -100,9 +102,9 @@ export default function Beranda () {
                     <div className="modal-body">
                         <input type="text" onChange={(e) => setSearch(e.target.value)} className="form-control mb-3" placeholder="Cari Manga" />
                         {resultS.map((result,index) => 
-                        <a href={`/detail/${result.data}`} key={index} className="mb-1 bg-primary text-white p-1 px-3 text-decoration-none d-block rounded" >
+                        <Link onClick={() => nav(`/detail/${result.data}`)} key={index} data-bs-dismiss="modal" data-bs-target="#my-modal" aria-label="Close"  className="mb-1 bg-primary text-white p-1 px-3 text-decoration-none d-block rounded" >
                             {result.value}
-                        </a>
+                        </Link>
                         )}
                     </div>
                 </div>

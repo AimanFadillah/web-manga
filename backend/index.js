@@ -103,5 +103,7 @@ app.get("/gambar",async (req,res) => {
         return res.send(404);
     }
 })
+
+app.get("/",(req,res) => res.json({msg:"Success"}))
  
 app.listen(5000,() => console.log("Berjalan di http://localhost:5000/"));
