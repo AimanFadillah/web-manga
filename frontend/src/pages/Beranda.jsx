@@ -18,6 +18,7 @@ export default function Beranda () {
     useEffect(() => {
         cat || query ? getdata(undefined,true) : getdata(); 
         getGenres();
+        getSearch();
     },[cat,query])
 
     useEffect(() => getSearch,[search])
