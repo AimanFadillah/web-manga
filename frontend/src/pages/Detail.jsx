@@ -12,7 +12,7 @@ export default function Detail () {
 
     async function getdata() {
         try{
-            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}`);
+            const data = await axios.get(`http://localhost:5000/manga/${slug}`);
             setManga(data.data);
         }catch(e){
             return mode404();

@@ -12,7 +12,7 @@ export default function Beranda () {
     const [loading,setLoading] = useState(false);
     const [search,setSearch] = useState("");
     const [resultS,setResults] = useState([]);
-    const [query,setQuery] = useState();
+    const [query,setQuery] = useState("");
     const nav = useNavigate();
 
     useEffect(() => {
@@ -27,7 +27,7 @@ export default function Beranda () {
         setLoading(true);
         clearTimeout(time);
         const tm = setTimeout(async () => {
-            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${reset ? 1 : pagination}&cat=${cat}&${query || "sortBy=views&asc=false"}`);
+            const data = await axios.get(`http://localhost:5000/manga?page=${reset ? 1 : pagination}&genre=${cat}&order=${query}`);
             setMangas(reset ? data.data : [...mangas,...data.data]);
             setPage(reset ? 2 : page + 1);
             setLoading(false);
@@ -36,12 +36,12 @@ export default function Beranda () {
     }
 
     async function getGenres() {
-        const response = await axios.get("https://mangapi.aimanfadillah.repl.co/genre");
+        const response = await axios.get("http://localhost:5000/genre");
         setGenres(response.data);
     }
 
     async function getSearch () {
-        const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/search?query=${search}`);
+        const response = await axios.get(`http://localhost:5000/search?query=${search}`);
         setResults(response.data);
     }
 
@@ -49,7 +49,7 @@ export default function Beranda () {
         <div className="row mb-3">
             <div className="col-md-2 col-4">
                 <select onChange={(e) => setCat(e.target.value)} className="form-select" aria-label="Default select example">
-                    <option value={""} >Genre</option>
+                    <option value="" >Genre</option>
                     {genres.map((genre,index) => 
                         <option value={genre.id} key={index}>{genre.nama}</option>
                     )}
@@ -57,10 +57,12 @@ export default function Beranda () {
             </div>
             <div className="col-md-2 col-3 p-0 me-2">
                 <select onChange={(e) => setQuery(e.target.value)} className="form-select" aria-label="Default select example">
-                    <option value="sortBy=views&asc=false" >Tertinggi</option>
-                    <option value="sortBy=views&asc=true" >Terendah</option>
-                    <option value="sortBy=name&asc=true" >A - Z</option>
-                    <option value="sortBy=name&asc=false" >Z - A</option>
+                    <option value="" >All</option>
+                    <option value="popular" >Popular</option>
+                    <option value="update" >Update</option>
+                    <option value="latest" >Latest</option>
+                    <option value="title" >A - Z</option>
+                    <option value="titlereverse" >Z - A</option>
                 </select>
             </div>
             <div className="col-md-2 d-flex col-4 p-0 align-items-center">
@@ -79,9 +81,9 @@ export default function Beranda () {
             <div key={index} className="col-md-3 col-6 mb-3">
                 <div>
                     <Link className="card shadow text-decoration-none" to={`/manga/${manga.slug}`}>
-                        <img src={manga.gambar} height={"350"} className="card-img-top" alt="tesst" />
+                        <img src={manga.gambar} height={"350"} className="card-img-top" alt={manga.judul} />
                         <div className="card-body">
-                            <h5 className="card-title">{manga.judul}</h5>
+                            <h5 className="card-title">{manga.judul.length > 20 ? manga.judul.substring(0,20) + "..." : manga.judul }</h5>
                             <p className="card-text text-secondary">{manga.genre}</p>
                         </div>
                     </Link>
