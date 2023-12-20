@@ -22,7 +22,7 @@ export default function History () {
                         <img src={manga.gambar} height={"350"} onClick={() => nav(`/manga/${manga.slug}/${manga.slugChapter}`)} className="card-img-top" alt="tesst" />
                         <div className="card-body">
                             <h5 className="card-title" onClick={() => nav(`/manga/${manga.slug}/${manga.slugChapter}`)} >{manga.judul.length > 20 ? manga.judul.substring(0,20) + "..." : manga.judul}</h5>
-                            <div className="d-inline badge bg-success" onClick={() => nav(`/manga/${manga.slug}/${manga.slugChapter}`)} >Chapter {(manga.slugChapter).split("-")[3]}</div>
+                            <div className="d-inline badge bg-success" onClick={() => nav(`/manga/${manga.slug}/${manga.slugChapter}`)} >Chapter {(manga.slugChapter).split("-").slice(-1)[0]}</div>
                             <div className="d-inline badge bg-danger ms-1" onClick={() => removeHistory(index)} ><i className="bi bi-trash-fill"></i></div>
                         </div>
                     </div>

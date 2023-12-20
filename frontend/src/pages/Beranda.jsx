@@ -27,7 +27,7 @@ export default function Beranda () {
         setLoading(true);
         clearTimeout(time);
         const tm = setTimeout(async () => {
-            const data = await axios.get(`http://localhost:5000/manga?page=${reset ? 1 : pagination}&genre=${cat}&order=${query}`);
+            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${reset ? 1 : pagination}&genre=${cat}&order=${query}`);
             setMangas(reset ? data.data : [...mangas,...data.data]);
             setPage(reset ? 2 : page + 1);
             setLoading(false);
@@ -36,12 +36,12 @@ export default function Beranda () {
     }
 
     async function getGenres() {
-        const response = await axios.get("http://localhost:5000/genre");
+        const response = await axios.get("https://mangapi.aimanfadillah.repl.co/genre");
         setGenres(response.data);
     }
 
     async function getSearch () {
-        const response = await axios.get(`http://localhost:5000/search?query=${search}`);
+        const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/search?query=${search}`);
         setResults(response.data);
     }
 
