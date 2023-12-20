@@ -76,6 +76,13 @@ export default function Beranda () {
             next={getdata}
             hasMore={true}
             className="row"
+            loader={
+                <div className="row my-3">
+                    <div className="col-md-12 d-flex justify-content-center mt-3">
+                        <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
+                    </div>
+                </div>
+            }
         >
             {mangas.map((manga,index) => 
             <div key={index} className="col-md-3 col-6 mb-3">
@@ -91,11 +98,7 @@ export default function Beranda () {
             </div>
             )}      
         </InfiniteScroll>
-        <div className="row ">
-            <div className="col-md-12 d-flex justify-content-center mt-3">
-                <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
-            </div>
-        </div>
+        
 
         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog">
@@ -104,7 +107,7 @@ export default function Beranda () {
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
-                        <input type="text" onChange={(e) => setSearch(e.target.value)} className="form-control mb-3" placeholder="Cari Manga" />
+                        <input type="text" onKeyUp={(e) => setSearch(e.target.value)} className="form-control mb-3" placeholder="Cari Manga" />
                         {resultS.map((result,index) => 
                         <Link onClick={() => nav(`/manga/${result.data}`)} key={index} data-bs-dismiss="modal" data-bs-target="#my-modal" aria-label="Close"  className="mb-1 bg-primary text-white p-1 px-3 text-decoration-none d-block rounded" >
                             {result.value}
