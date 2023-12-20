@@ -116,47 +116,56 @@ app.get("/manga/:slug", async (req, res) => {
     $(".bxcl.scrolling > ul").find("li").each((index, element) => {
         chapters.push({
             slug: ($(element).find(".lchx > a").attr("href")).split("/")[3],
-            nama: $(element).find(".lchx > a").text().replace(/\n/g,""),
+            nama: $(element).find(".lchx > a").text().replace(/\n/g, ""),
         })
     });
     const data = {
         gambar: $(".thumb").find("img").attr("src"),
-        nama: ($(".spe > span").eq(0).text()).split("\n")[1],
+        nama: ($("h1.entry-title").text()).split("Komik\n")[1],
         status: ($(".spe > span").eq(1).text()).split("\n")[1],
         author: ($(".spe > span").eq(3).text()).split("\n")[1],
         rilis: ($(".spe > span").eq(5).text()).split("\n")[1],
-        genre: ($(".genre-info").text()).replace(/\n/g," "),
-        deskripsi: ($(".entry-content.entry-content-single").find("p").text()).replace(/\n/g," "),
+        genre: ($(".genre-info").text()).replace(/\n/g, " "),
+        deskripsi: ($(".entry-content.entry-content-single").find("p").text()).replace(/\n/g, " "),
         chapters,
     }
     return res.json(data)
 })
 
-// app.get("/manga/:slug/:chapter",async (req,res) => {
-//     try{
-//         const response = await axios.get(`https://mangaid.click/manga/${req.params.slug}/${req.params.chapter}/1`);
-//         const $ = cheerio.load(response.data);
-//         const data = [];
-//         $("#all").find("img").each((index,element) => {
-//             data.push({
-//                 gambar : $(element).attr("data-src"),
-//             });
-//         });
-//         return res.json(data);
-//     }catch(e){
-//         return res.sendStatus(404);
-//     }
-// });
+app.get("/manga/:slug/:chapter", async (req, res) => {
+    // try {
+    //     const response = await axios.get(`https://mangaid.click/manga/${req.params.slug}/${req.params.chapter}/1`);
+    //     const $ = cheerio.load(response.data);
+    //     const data = [];
+    //     $("#all").find("img").each((index, element) => {
+    //         data.push({
+    //             gambar: $(element).attr("data-src"),
+    //         });
+    //     });
+    //     return res.json(data);
+    // } catch (e) {
+    //     return res.sendStatus(404);
+    // }
+    const response = await axios.get(`https://komikcast.net/${req.params.chapter}/`);
+    const $ = cheerio.load(response.data);
+    const data = [];
+    $("#anjay_ini_id_kh").find("img").each((index, element) => {
+        data.push({
+            gambar: $(element).attr("src"),
+        });
+    });
+    return res.json(data);
+});
 
-// app.get("/gambar",async (req,res) => {
-//     try{ 
-//         const response = await axios.get(req.query.url,{ responseType: 'arraybuffer' });
-//         res.header('Content-Type', 'image/jpeg');
-//         return res.send(response.data);
-//     }catch(e){
-//         return res.send(404);
-//     }
-// })
+app.get("/gambar", async (req, res) => {
+    try {
+        const response = await axios.get(req.query.url, { responseType: 'arraybuffer' });
+        res.header('Content-Type', 'image/jpeg');
+        return res.send(response.data);
+    } catch (e) {
+        return res.send(404);
+    }
+})
 
 app.get("/", (req, res) => res.json({ msg: "Success" }))
 
