@@ -19,20 +19,19 @@ export default function Chapter () {
     },[]);
 
     async function getdata() {
-        clearTimeout(time);
         const indexChapter = manga.chapters[indexC] ? manga.chapters[indexC].slug : chapterKe;
         if(indexC && indexC < 0 || indexC == 0) return false;
-        const tm = setTimeout(async () => {
-            try{
-                const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}/${indexChapter}`);
-                setChapter([...chapter,{gambar:`Chapter ${indexChapter}`},...data.data]);
-                indexC ? setIndexC(indexC - 1) : "";
-                if(manga.chapters.length != 0) setHistory(indexChapter);
-            }catch(e){
-                return mode404()
-            }
-        },500);
-        setTime(tm)
+        try{
+            document.body.style.overflow = "hidden"
+            loading(true)
+            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}/${indexChapter}`);
+            setChapter([...chapter,{gambar:`Chapter ${indexChapter}`},...data.data]);
+            indexC ? setIndexC(indexC - 1) : "";
+            if(manga.chapters.length != 0) setHistory(indexChapter);
+            setTimeout(() => {loading(false);document.body.style.overflow = ""},1000);
+        }catch(e){
+            return mode404()
+        }
     }
 
     async function getChapters () {
@@ -60,7 +59,7 @@ export default function Chapter () {
         }else{
             if(historys.length >= 20) historys.pop()
             historys = [history,...historys];
-            localStorage.setItem("historys",JSON.stringify(historys))
+            localStorage.setItem("historys",JSON.stringify(historys)) 
         }
     }
 
@@ -69,7 +68,7 @@ export default function Chapter () {
             dataLength={chapter.length}
             hasMore={true}
             className="row justify-content-center"
-            scrollThreshold="200px"
+            scrollThreshold="100px"
             next={getdata}
             >
             {chapter.map((image,index) => 
@@ -82,11 +81,6 @@ export default function Chapter () {
                 </div>
             )}
         </InfiniteScroll>
-        <div className="row mt-4">
-            <div className="col-md-12 d-flex justify-content-center">
-                <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
-            </div>
-        </div>
     </div>
 
 }
