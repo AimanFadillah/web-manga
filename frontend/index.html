@@ -12,6 +12,7 @@
       *{
         font-family: 'Inter', sans-serif;
       }
+
       body {
         margin: 0;
         padding: 0;
@@ -46,7 +47,10 @@
 
     </style>
     <script>
-      function loading (check = true) {
+      let time;
+      let state;
+
+      function loadingPenuh (check = true) {
         document.querySelector("#loadingScreen").style.display = check ? "flex" : "none";
       }
 
