@@ -6,7 +6,7 @@ import cors from "cors";
 const app = express();
 const port = 5000;
 
-app.use(cors());
+app.use(cors()); 
 
 app.get("/search", async (req, res) => {
     const response = await axios.get(`https://komikcast.net/daftar-komik/?title=${req.query.query}`)
@@ -36,7 +36,7 @@ app.get("/genre", async (req, res) => {
 
 app.get("/manga", async (req, res) => {
     try{
-        const response = await axios.get(`https://komikcast.net/daftar-komik/page/${req.query.page || 1}/?genre=${req.query.genre || ""}&order=${req.query.order || ""}`);
+        const response = await axios.get(`https://komikcast.lol/daftar-komik/page/${req.query.page || 1}/?genre=${req.query.genre || ""}&order=${req.query.order || ""}`);
         const $ = cheerio.load(response.data);
         const data = [];
         let gambar;

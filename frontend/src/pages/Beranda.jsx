@@ -28,7 +28,7 @@ export default function Beranda () {
             setManga();
         }else if(state === "history") {
             setMode("main");
-        }else if(state == "chapter"){
+        }else if(state === "chapter"){
             state = "show"
             setMode("show");
             setChapter([]);
@@ -37,6 +37,17 @@ export default function Beranda () {
             setMangaChapter({
                 chapters:[]
             })
+        }else if(state === "chapter_history"){
+            state = "history"
+            setMode("history");
+            setChapter([]);
+            setChapterKe();
+            setIndexC();
+            setMangaChapter({
+                chapters:[]
+            })
+            setSlug();
+            setManga();
         }else {
             setMode("main");
             setSlug();
@@ -70,7 +81,6 @@ export default function Beranda () {
     async function getSearch () {
         clearTimeout(time);
         time = setTimeout(async () => {
-            console.log("loop")
             const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/search?query=${search}`);
             setResults(response.data); 
         },400);
@@ -92,6 +102,14 @@ export default function Beranda () {
     function modeChapter (slug,chapterKe) {
         history.pushState({state:true},"","")
         state = "chapter";
+        setMode("chapter");
+        setSlug(slug)
+        setChapterKe(chapterKe)
+    }
+
+    function modeChapterHistory (slug,chapterKe) {
+        history.pushState({state:true},"","")
+        state = "chapter_history";
         setMode("chapter");
         setSlug(slug)
         setChapterKe(chapterKe)
@@ -315,7 +333,7 @@ export default function Beranda () {
             <div key={index} className="col-md-3 col-6 mb-3">
                 <div>
                     <div className="card shadow text-decoration-none" >
-                        <img src={manga.gambar} height={"350"} onClick={() => modeChapter(manga.slug,manga.slugChapter)} className="card-img-top" alt="tesst" />
+                        <img src={manga.gambar} height={"350"} onClick={() => modeChapterHistory(manga.slug,manga.slugChapter)} className="card-img-top" alt="tesst" />
                         <div className="card-body">
                             <h5 className="card-title" onClick={() => nav(`/manga/${manga.slug}/${manga.slugChapter}`)} >{manga.judul.length > 20 ? manga.judul.substring(0,20) + "..." : manga.judul}</h5>
                             <div className="d-inline badge bg-success" onClick={() => nav(`/manga/${manga.slug}/${manga.slugChapter}`)} >Chapter {(manga.slugChapter).split("-").slice(-1)[0]}</div>
