@@ -22,37 +22,34 @@ export default function Beranda () {
     },[]);
 
     function aturBack(){
-        if(state === "show") {                
-            setMode("main");
-            setSlug();
-            setManga();
-        }else if(state === "history") {
-            setMode("main");
-        }else if(state === "chapter"){
-            state = "show"
-            setMode("show");
-            setChapter([]);
-            setChapterKe();
-            setIndexC();
-            setMangaChapter({
-                chapters:[]
-            })
-        }else if(state === "chapter_history"){
-            state = "history"
-            setMode("history");
-            setChapter([]);
-            setChapterKe();
-            setIndexC();
-            setMangaChapter({
-                chapters:[]
-            })
-            setSlug();
-            setManga();
-        }else {
-            setMode("main");
-            setSlug();
-            setManga();
+        switch(state){
+            case "show":
+                showToMain()
+                break;
+
+            case "chapter":
+                chapterTo("show")
+                break;
+
+            case "history":
+                setMode("main");
+                break;
+            
+            case "chapter_history":
+                chapterTo("history")
+                setSlug();
+                setManga();
+                break;
+            
+            default :
+            showToMain();
         }
+    }
+
+    function setState(nama,mode = true){
+        history.pushState({state:true},"","")
+        state = nama;
+        mode ? setMode(nama) : undefined;
     }
 
     // MODE MAIN
@@ -79,37 +76,23 @@ export default function Beranda () {
     }
 
     async function getSearch () {
-        clearTimeout(time);
-        time = setTimeout(async () => {
-            const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/search?query=${search}`);
-            setResults(response.data); 
-        },400);
+        const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/search?query=${search}`);
+        setResults(response.data); 
     }
 
     function modeShow (slug) {
-        history.pushState({state:true},"","")
         setSlug(slug)
-        state = "show";
-        setMode("show");
-    }
-
-    function modeHistory () {
-        history.pushState({state:true},"","")
-        state = "history";
-        setMode("history");
+        setState("show");
     }
 
     function modeChapter (slug,chapterKe) {
-        history.pushState({state:true},"","")
-        state = "chapter";
-        setMode("chapter");
+        setState("chapter")
         setSlug(slug)
         setChapterKe(chapterKe)
     }
 
     function modeChapterHistory (slug,chapterKe) {
-        history.pushState({state:true},"","")
-        state = "chapter_history";
+        setState("chapter_history",false)
         setMode("chapter");
         setSlug(slug)
         setChapterKe(chapterKe)
@@ -120,20 +103,22 @@ export default function Beranda () {
     const [manga,setManga] = useState();
 
     useEffect(() => {
-        if(slug){
-            // document.body.scrollIntoView({block: 'start'});
-        
-            getdataShow()
-        }
+        if(slug) getManga()
     },[slug]);
 
-    async function getdataShow() {
+    async function getManga() {
         try{
             const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}`);
             setManga(data.data);
         }catch(e){
             return mode404();
         }
+    }
+
+    function showToMain(){
+        setMode("main");
+        setSlug();
+        setManga();
     }
 
     // MODE HISTORY
@@ -164,21 +149,25 @@ export default function Beranda () {
     async function getdataChapters() {
         const indexChapter = mangaChapter.chapters[indexC] ? mangaChapter.chapters[indexC].slug : chapterKe;
         if(indexC && indexC < 0) return false;
-            document.body.style.overflow = "hidden"
-            loadingPenuh(true)
-            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}/${indexChapter}`);
-            setChapter([...chapter,{gambar:`Chapter ${(indexChapter).split("-").slice(-1)[0]}`},...data.data]);
-            indexC && indexC >= 0 || indexC == 0 ? setIndexC(indexC - 1) : "";
-            if(mangaChapter.chapters.length != 0) setHistory(indexChapter);
-            setTimeout(() => {loadingPenuh(false);document.body.style.overflow = ""},1000);
+        document.body.style.overflow = "hidden"
+        loadingPenuh(true)
+        const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}/${indexChapter}`);
+        setChapter([...chapter,{gambar:`Chapter ${(indexChapter).split("chapter-")[1].replace(/-/g, '.')}`},...data.data]);
+        indexC && indexC >= 0 || indexC == 0 ? setIndexC(indexC - 1) : "";
+        if(mangaChapter.chapters.length != 0) setHistory(indexChapter);
+        setTimeout(() => {loadingPenuh(false);document.body.style.overflow = ""},1000);
        
     }
 
     async function getChapters () {
-        const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}`);
-        response.data.chapters.map((chapter,loop) =>  chapter.slug === chapterKe ? setIndexC(loop - 1) : "");
-        setMangaChapter(response.data);
-        setHistory(undefined,response.data);
+        try{
+            const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}`);
+            response.data.chapters.map((chapter,loop) =>  chapter.slug === chapterKe ? setIndexC(loop - 1) : "");
+            setMangaChapter(response.data);
+            setHistory(undefined,response.data);
+        }catch(e){
+            return mode404();
+        }
     }
 
     async function setHistory (slugChapter = chapterKe,data = manga) {
@@ -193,15 +182,23 @@ export default function Beranda () {
         const checkData = historys.find((ht) => ht.slug == history.slug);
         if(checkData){
             const index = historys.findIndex((ht) => ht.slug == history.slug);
-            historys.splice(index,1);
-            historys = [history,...historys];
-            localStorage.setItem("historys",JSON.stringify(historys))
-        }else{
-            if(historys.length >= 20) historys.pop()
-            historys = [history,...historys];
-            localStorage.setItem("historys",JSON.stringify(historys)) 
+            historys.splice(index,1);  
         }
+        if(historys.length >= 20) historys.pop()
+        historys = [history,...historys];
+        localStorage.setItem("historys",JSON.stringify(historys))
         setMangasHistory(historys);
+    }
+
+    function chapterTo(to){
+        state = to
+        setMode(to);
+        setChapter([]);
+        setChapterKe();
+        setIndexC();
+        setMangaChapter({
+            chapters:[]
+        })
     }
 
     return <div className="container mt-5" >
@@ -229,7 +226,7 @@ export default function Beranda () {
                 <div className="col-md-2 d-flex col-4 p-0 align-items-center">
                     <div className={`spinner-border me-2 text-primary ${loading ? ""  : "d-none"}`} role="status"></div>
                     <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i className="bi bi-search"></i></button>
-                    <Link className="btn btn-primary ms-1" onClick={modeHistory} ><i className="bi bi-clock-history"></i></Link>
+                    <Link className="btn btn-primary ms-1" onClick={() => setState("history")} ><i className="bi bi-clock-history"></i></Link>
                 </div>
             </div>
             <InfiniteScroll
@@ -260,7 +257,6 @@ export default function Beranda () {
                 </div>
                 )}      
             </InfiniteScroll>
-            
 
             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
@@ -269,9 +265,8 @@ export default function Beranda () {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <input type="text" onChange={(e) => setSearch(e.target.value)} className="form-control mb-3" placeholder="Cari Manga" />
+                            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} className="form-control mb-3" placeholder="Cari Manga" />
                             {resultS.map((result,index) => 
-                            // <Link onClick={() => nav(`/manga/${result.data}`)} key={index} data-bs-dismiss="modal" data-bs-target="#my-modal" aria-label="Close"  className="mb-1 bg-primary text-white p-1 px-3 text-decoration-none d-block rounded" >
                             <Link onClick={() => modeShow(result.data)} key={index} data-bs-dismiss="modal" data-bs-target="#my-modal" aria-label="Close"  className="mb-1 bg-primary text-white p-1 px-3 text-decoration-none d-block rounded" >
                                 {result.value}
                             </Link>
@@ -329,6 +324,7 @@ export default function Beranda () {
         <>  
         <h1 className="text-center" ><i className="bi bi-clock-history"></i> History</h1>
         <div className="row mt-3">
+            {console.log( ) }
             {mangasHistory.map((manga,index) => 
             <div key={index} className="col-md-3 col-6 mb-3">
                 <div>
@@ -336,7 +332,7 @@ export default function Beranda () {
                         <img src={manga.gambar} height={"350"} onClick={() => modeChapterHistory(manga.slug,manga.slugChapter)} className="card-img-top" alt="tesst" />
                         <div className="card-body">
                             <h5 className="card-title" onClick={() => nav(`/manga/${manga.slug}/${manga.slugChapter}`)} >{manga.judul.length > 20 ? manga.judul.substring(0,20) + "..." : manga.judul}</h5>
-                            <div className="d-inline badge bg-success" onClick={() => nav(`/manga/${manga.slug}/${manga.slugChapter}`)} >Chapter {(manga.slugChapter).split("-").slice(-1)[0]}</div>
+                            <div className="d-inline badge bg-success" onClick={() => nav(`/manga/${manga.slug}/${manga.slugChapter}`)} >Chapter {(manga.slugChapter).split("chapter-")[1].replace(/-/g, '.')}</div>
                             <div className="d-inline badge bg-danger ms-1" onClick={() => removeHistory(index)} ><i className="bi bi-trash-fill"></i></div>
                         </div>
                     </div>

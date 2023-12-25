@@ -1,6 +1,6 @@
 import express from "express";
 import axios from "axios";
-import cheerio, { html } from "cheerio";
+import cheerio from "cheerio";
 import cors from "cors";
 
 const app = express();
@@ -9,7 +9,7 @@ const port = 5000;
 app.use(cors()); 
 
 app.get("/search", async (req, res) => {
-    const response = await axios.get(`https://komikcast.net/daftar-komik/?title=${req.query.query}`)
+    const response = await axios.get(`https://komikcast.net/?s=${req.query.query}`)
     const $ = cheerio.load(response.data);
     const data = [];
     $(".film-list").find(".animepost").each((index, element) => {
