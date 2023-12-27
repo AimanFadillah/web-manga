@@ -13,6 +13,7 @@ export default function Beranda () {
     const [resultS,setResults] = useState([]);
     const [query,setQuery] = useState("update");
     const [mode,setMode] = useState("main");
+    const [more,setMore] = useState(true);
     const nav = useNavigate();
 
     useEffect(() => { 
@@ -53,8 +54,7 @@ export default function Beranda () {
     }
 
     // MODE MAIN
-    useEffect(() => getSearch,[search])
-    useEffect(() => {
+    useEffect(() => { 
         cat || query ? getdata(undefined,true) : getdata();
         getGenres();
     },[cat,query])
@@ -63,10 +63,11 @@ export default function Beranda () {
         setLoading(true);
         clearTimeout(time);
         time = setTimeout(async () => {
-            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${reset ? 1 : pagination}&genre=${cat}&order=${query}`);
+            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${reset ? 1 : pagination}&genre=${cat}&order=${query}&title=${search}`);
             setMangas(reset ? data.data : [...mangas,...data.data]);
             setPage(reset ? 2 : page + 1);
             setLoading(false);
+            data.data.length == 0 ? setMore(false) : setMore(true)
         },pagination == 1 ? 0 : 500);
     }
 
@@ -204,7 +205,7 @@ export default function Beranda () {
     return <div className="container mt-5" >
         {mode === "main" ? 
         <>
-            <div className="row mb-3">
+            <div className="row mb-3 ">
                 <div className="col-md-2 col-4">
                     <select defaultValue={cat} onChange={(e) => setCat(e.target.value)} className="form-select" aria-label="Default select example">
                         <option value="" >Genre</option>
@@ -213,7 +214,7 @@ export default function Beranda () {
                         )}
                     </select>
                 </div>
-                <div className="col-md-2 col-3 p-0 me-2">
+                <div className="col-md-2 col-3 p-0 ">
                     <select defaultValue={query} onChange={(e) => setQuery(e.target.value)} className="form-select" aria-label="Default select example">
                         <option value=""    >All</option>
                         <option value="popular" >Popular</option>
@@ -223,16 +224,31 @@ export default function Beranda () {
                         <option value="titlereverse" >Z - A</option>
                     </select>
                 </div>
-                <div className="col-md-2 d-flex col-4 p-0 align-items-center">
-                    <div className={`spinner-border me-2 text-primary ${loading ? ""  : "d-none"}`} role="status"></div>
-                    <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i className="bi bi-search"></i></button>
+                <div className="col-md-5 d-flex col-4 p-0 align-items-center">
+                    <div className={`spinner-border text-primary ms-1 ${loading ? ""  : "d-none"}`} role="status"></div>
+                    <button className="btn btn-primary ms-1 " onClick={() => {
+                        document.querySelector("#inputSearch").classList.contains("d-none") ? 
+                        document.querySelector("#inputSearch").setAttribute("class","col-md-3") :
+                        document.querySelector("#inputSearch").setAttribute("class","col-md-3 d-none")
+                    }} ><i className="bi bi-search"></i></button>
                     <Link className="btn btn-primary ms-1" onClick={() => setState("history")} ><i className="bi bi-clock-history"></i></Link>
+                </div>
+                <div className="col-md-3 d-md-block d-none" id="inputSearch" >
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        getdata(undefined,true)
+                    }}>
+                        <div className="input-group mt-md-0 mt-2">
+                            <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} className="form-control"  placeholder="Cari Komik" />
+                            <button className="btn btn-primary" type="submit"><i className="bi bi-search"></i></button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <InfiniteScroll
                 dataLength={mangas.length}
                 next={getdata}
-                hasMore={true}
+                hasMore={more}
                 className="row"
                 loader={
                     <div className="row my-3">
@@ -245,7 +261,6 @@ export default function Beranda () {
                 {mangas.map((manga,index) => 
                 <div key={index} className="col-md-3 col-6 mb-3">
                     <div>
-                        {/* <Link className="card shadow text-decoration-none" to={`/manga/${manga.slug}`} > */}
                         <Link className="card shadow text-decoration-none" onClick={() => modeShow(manga.slug)} >
                             <img src={manga.gambar} height={"350"} className="card-img-top" alt={manga.judul} />
                             <div className="card-body">
@@ -258,23 +273,6 @@ export default function Beranda () {
                 )}      
             </InfiniteScroll>
 
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header d-block d-md-none p -0">
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} className="form-control mb-3" placeholder="Cari Manga" />
-                            {resultS.map((result,index) => 
-                            <Link onClick={() => modeShow(result.data)} key={index} data-bs-dismiss="modal" data-bs-target="#my-modal" aria-label="Close"  className="mb-1 bg-primary text-white p-1 px-3 text-decoration-none d-block rounded" >
-                                {result.value}
-                            </Link>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </> 
         : 
         mode === "show" ?
