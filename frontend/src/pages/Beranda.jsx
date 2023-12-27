@@ -14,6 +14,7 @@ export default function Beranda () {
     const [query,setQuery] = useState("update");
     const [mode,setMode] = useState("main");
     const [more,setMore] = useState(true);
+    const [inputSearch,setInputSearch] = useState(window.innerWidth >= 768 ? true : false);
     const nav = useNavigate();
 
     useEffect(() => { 
@@ -60,6 +61,7 @@ export default function Beranda () {
     },[cat,query])
 
     function getdata(pagination = page,reset = false) {
+        reset ? setMangas([]) : "";
         setLoading(true);
         clearTimeout(time);
         time = setTimeout(async () => {
@@ -224,16 +226,12 @@ export default function Beranda () {
                         <option value="titlereverse" >Z - A</option>
                     </select>
                 </div>
-                <div className="col-md-5 d-flex col-4 p-0 align-items-center">
-                    <div className={`spinner-border text-primary ms-1 ${loading ? ""  : "d-none"}`} role="status"></div>
-                    <button className="btn btn-primary ms-1 " onClick={() => {
-                        document.querySelector("#inputSearch").classList.contains("d-none") ? 
-                        document.querySelector("#inputSearch").setAttribute("class","col-md-3") :
-                        document.querySelector("#inputSearch").setAttribute("class","col-md-3 d-none")
-                    }} ><i className="bi bi-search"></i></button>
+                <div className="col-md-5 d-flex col-4 p-0 align-items-center ">
+                    {/* <div className={`spinner-border text-primary mx-1 ${loading ? ""  : "d-none"}`} role="status"></div> */}
+                    <button className="btn btn-primary ms-1 d-md-none d-block" onClick={() => setInputSearch(!inputSearch)} ><i className="bi bi-search"></i></button>
                     <Link className="btn btn-primary ms-1" onClick={() => setState("history")} ><i className="bi bi-clock-history"></i></Link>
                 </div>
-                <div className="col-md-3 d-md-block d-none" id="inputSearch" >
+                <div className={`col-md-3 ${inputSearch ? "" : "d-none"}`} id="inputSearch" >
                     <form onSubmit={(e) => {
                         e.preventDefault();
                         getdata(undefined,true)
