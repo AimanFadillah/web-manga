@@ -20,13 +20,13 @@ export default function Chapter () {
 
     async function getdata() {
         const indexChapter = manga.chapters[indexC] ? manga.chapters[indexC].slug : chapterKe;
-        if(indexC && indexC < 0 || indexC == 0) return false;
+        if(indexC && indexC < 0) return false;
         try{
             document.body.style.overflow = "hidden"
             loading(true)
             const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}/${indexChapter}`);
-            setChapter([...chapter,{gambar:`Chapter ${indexChapter}`},...data.data]);
-            indexC ? setIndexC(indexC - 1) : "";
+            setChapter([...chapter,{gambar:`Chapter ${(indexChapter).split("-").slice(-1)[0]}`},...data.data]);
+            indexC && indexC >= 0 || indexC == 0 ? setIndexC(indexC - 1) : "";
             if(manga.chapters.length != 0) setHistory(indexChapter);
             setTimeout(() => {loading(false);document.body.style.overflow = ""},1000);
         }catch(e){
