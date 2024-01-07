@@ -71,7 +71,7 @@ export default function Beranda () {
         setLoading(true);
         clearTimeout(time);
         time = setTimeout(async () => {
-            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga?page=${reset ? 1 : pagination}&genre=${cat}&order=${query}&title=${search}`);
+            const data = await axios.get(`https://mangapi-man.vercel.app/manga?page=${reset ? 1 : pagination}&genre=${cat}&order=${query}&title=${search}`);
             setMangas(reset ? data.data : [...mangas,...data.data]);
             setPage(reset ? 2 : page + 1);
             setLoading(false);
@@ -80,12 +80,12 @@ export default function Beranda () {
     }
 
     async function getGenres() {
-        const response = await axios.get("https://mangapi.aimanfadillah.repl.co/genre");
+        const response = await axios.get("https://mangapi-man.vercel.app/genre");
         setGenres(response.data);
     }
 
     async function getSearch () {
-        const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/search?query=${search}`);
+        const response = await axios.get(`https://mangapi-man.vercel.app/search?query=${search}`);
         setResults(response.data); 
     }
 
@@ -117,7 +117,7 @@ export default function Beranda () {
 
     async function getManga() {
         try{
-            const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}`);
+            const data = await axios.get(`https://mangapi-man.vercel.app/manga/${slug}`);
             setManga(data.data);
         }catch(e){
             return mode404();
@@ -160,7 +160,7 @@ export default function Beranda () {
         if(indexC && indexC < 0) return false;
         document.body.style.overflow = "hidden"
         loadingPenuh(true)
-        const data = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}/${indexChapter}`);
+        const data = await axios.get(`https://mangapi-man.vercel.app/manga/${slug}/${indexChapter}`);
         setChapter([...chapter,{gambar:`Chapter ${(indexChapter).split("chapter-")[1].replace(/-/g, '.')}`},...data.data]);
         indexC && indexC >= 0 || indexC == 0 ? setIndexC(indexC - 1) : "";
         if(mangaChapter.chapters.length != 0) setHistory(indexChapter);
@@ -169,7 +169,7 @@ export default function Beranda () {
 
     async function getChapters () {
         try{
-            const response = await axios.get(`https://mangapi.aimanfadillah.repl.co/manga/${slug}`);
+            const response = await axios.get(`https://mangapi-man.vercel.app/manga/${slug}`);
             response.data.chapters.map((chapter,loop) =>  chapter.slug === chapterKe ? setIndexC(loop - 1) : "");
             setMangaChapter(response.data);
             setHistory(undefined,response.data);
@@ -357,7 +357,7 @@ export default function Beranda () {
             {chapter.map((image,index) => 
                 <div className="col-md-12 p-0 d-flex justify-content-center" key={index}>
                     {!image.gambar.includes("Chapter") ?
-                    <img src={`https://mangapi.aimanfadillah.repl.co/gambar?url=${image.gambar}`} className="img-fluid" alt={index} />
+                    <img src={`https://mangapi-man.vercel.app/gambar?url=${image.gambar}`} className="img-fluid" alt={index} />
                     : 
                     <h1>{image.gambar}</h1>
                     }
