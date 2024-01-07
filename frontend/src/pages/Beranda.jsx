@@ -15,7 +15,13 @@ export default function Beranda () {
     const [mode,setMode] = useState("main");
     const [more,setMore] = useState(true);
     const [inputSearch,setInputSearch] = useState(window.innerWidth >= 768 ? true : false);
+    const [theme,setTheme] = useState(localStorage.getItem("mode") || "light");
     const nav = useNavigate();
+
+    useEffect(() => {
+        localStorage.setItem("mode",theme);
+        document.body.setAttribute("data-bs-theme",theme);
+    },[theme])
 
     useEffect(() => { 
         document.documentElement.style.scrollBehavior = 'auto'
@@ -158,8 +164,7 @@ export default function Beranda () {
         setChapter([...chapter,{gambar:`Chapter ${(indexChapter).split("chapter-")[1].replace(/-/g, '.')}`},...data.data]);
         indexC && indexC >= 0 || indexC == 0 ? setIndexC(indexC - 1) : "";
         if(mangaChapter.chapters.length != 0) setHistory(indexChapter);
-        setTimeout(() => {loadingPenuh(false);document.body.style.overflow = ""},1000);
-       
+        setTimeout(() => {loadingPenuh(false);document.body.style.overflow = ""},2000);
     }
 
     async function getChapters () {
@@ -227,9 +232,11 @@ export default function Beranda () {
                     </select>
                 </div>
                 <div className="col-md-5 d-flex col-4 p-0 align-items-center ">
-                    {/* <div className={`spinner-border text-primary mx-1 ${loading ? ""  : "d-none"}`} role="status"></div> */}
                     <button className="btn btn-primary ms-1 d-md-none d-block" onClick={() => setInputSearch(!inputSearch)} ><i className="bi bi-search"></i></button>
                     <Link className="btn btn-primary ms-1" onClick={() => setState("history")} ><i className="bi bi-clock-history"></i></Link>
+                    <Link className="btn btn-primary ms-1" onClick={() => 
+                        theme === "light" ? setTheme("dark") : setTheme("light")
+                    }  >{theme === "light" ? <i className="bi bi-moon-stars-fill"></i> : <i className="bi bi-sun-fill"></i>}</Link>
                 </div>
                 <div className={`col-md-3 ${inputSearch ? "" : "d-none"}`} id="inputSearch" >
                     <form onSubmit={(e) => {
@@ -249,7 +256,7 @@ export default function Beranda () {
                 hasMore={more}
                 className="row"
                 loader={
-                    <div className="row my-3">
+                    <div className="row my-3 mx-0">
                         <div className="col-md-12 d-flex justify-content-center mt-3">
                             <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
                         </div>
@@ -320,7 +327,6 @@ export default function Beranda () {
         <>  
         <h1 className="text-center" ><i className="bi bi-clock-history"></i> History</h1>
         <div className="row mt-3">
-            {console.log( ) }
             {mangasHistory.map((manga,index) => 
             <div key={index} className="col-md-3 col-6 mb-3">
                 <div>
