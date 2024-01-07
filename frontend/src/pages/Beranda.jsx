@@ -164,8 +164,7 @@ export default function Beranda () {
         setChapter([...chapter,{gambar:`Chapter ${(indexChapter).split("chapter-")[1].replace(/-/g, '.')}`},...data.data]);
         indexC && indexC >= 0 || indexC == 0 ? setIndexC(indexC - 1) : "";
         if(mangaChapter.chapters.length != 0) setHistory(indexChapter);
-        setTimeout(() => {loadingPenuh(false);document.body.style.overflow = ""},1500);
-       
+        setTimeout(() => {loadingPenuh(false);document.body.style.overflow = ""},2000);
     }
 
     async function getChapters () {
