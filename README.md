@@ -1,1 +1,1 @@
-https://mangaman.aimanfadillah.repl.co/
+https://mangaman-man.vercel.app/
