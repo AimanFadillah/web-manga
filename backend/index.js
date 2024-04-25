@@ -8,8 +8,15 @@ const port = 5000;
 
 app.use(cors()); 
 
+const configAxios = axios.create({
+    headers:{
+        "User-Agent" : "PostmanRuntime/7.37.3"
+    },
+    baseURL:"https://komikcast1.com"
+})
+
 app.get("/search", async (req, res) => {
-    const response = await axios.get(`https://komikcast1.com/?s=${req.query.query}`)
+    const response = await configAxios.get(`/?s=${req.query.query}`)
     const $ = cheerio.load(response.data);
     const data = [];
     $(".film-list").find(".animepost").each((index, element) => {
@@ -22,7 +29,7 @@ app.get("/search", async (req, res) => {
 })
 
 app.get("/genre", async (req, res) => {
-    const response = await axios.get(`https://komikcast1.com/daftar-genre/`);
+    const response = await configAxios.get(`/daftar-genre/`);
     const $ = cheerio.load(response.data);
     const data = [];
     $(".genrelist").find("li").each((index, element) => {
@@ -36,7 +43,7 @@ app.get("/genre", async (req, res) => {
 
 app.get("/manga", async (req, res) => {
     try{
-        const response = await axios.get(`https://komikcast1.com/daftar-komik/page/${req.query.page || 1}/?genre=${req.query.genre || ""}&order=${req.query.order || ""}&title=${req.query.title || ""}`);
+        const response = await configAxios.get(`/daftar-komik/page/${req.query.page || 1}/?genre=${req.query.genre || ""}&order=${req.query.order || ""}&title=${req.query.title || ""}`);
         const $ = cheerio.load(response.data);
         const data = [];
         let gambar;
@@ -58,7 +65,7 @@ app.get("/manga", async (req, res) => {
 
 app.get("/manga/:slug", async (req, res) => {
     try{
-        const response = await axios.get(`https://komikcast1.com/komik/${req.params.slug}/`);
+        const response = await configAxios.get(`/komik/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const chapters = [];
         $(".bxcl.scrolling > ul").find("li").each((index, element) => {
@@ -85,7 +92,7 @@ app.get("/manga/:slug", async (req, res) => {
 
 app.get("/manga/:slug/:chapter", async (req, res) => {
     try{
-        const response = await axios.get(`https://komikcast1.com/${req.params.chapter}/`);
+        const response = await configAxios.get(`/${req.params.chapter}/`);
         const $ = cheerio.load(response.data);
         const data = [];
         $("#anjay_ini_id_kh").find("img").each((index, element) => {
@@ -101,7 +108,7 @@ app.get("/manga/:slug/:chapter", async (req, res) => {
 
 app.get("/gambar", async (req, res) => {
     try {
-        const response = await axios.get(req.query.url, { responseType: 'arraybuffer' });
+        const response = await configAxios.get(req.query.url, { responseType: 'arraybuffer' });
         res.header('Content-Type', 'image/jpeg');
         return res.send(response.data);
     } catch (e) {
