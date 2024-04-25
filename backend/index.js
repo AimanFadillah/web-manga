@@ -9,7 +9,7 @@ const port = 5000;
 app.use(cors()); 
 
 app.get("/search", async (req, res) => {
-    const response = await axios.get(`https://komikcast.net/?s=${req.query.query}`)
+    const response = await axios.get(`https://komikcast1.com/?s=${req.query.query}`)
     const $ = cheerio.load(response.data);
     const data = [];
     $(".film-list").find(".animepost").each((index, element) => {
@@ -22,7 +22,7 @@ app.get("/search", async (req, res) => {
 })
 
 app.get("/genre", async (req, res) => {
-    const response = await axios.get(`https://komikcast.net/daftar-genre/`);
+    const response = await axios.get(`https://komikcast1.com/daftar-genre/`);
     const $ = cheerio.load(response.data);
     const data = [];
     $(".genrelist").find("li").each((index, element) => {
@@ -36,7 +36,7 @@ app.get("/genre", async (req, res) => {
 
 app.get("/manga", async (req, res) => {
     try{
-        const response = await axios.get(`https://komikcast.net/daftar-komik/page/${req.query.page || 1}/?genre=${req.query.genre || ""}&order=${req.query.order || ""}&title=${req.query.title || ""}`);
+        const response = await axios.get(`https://komikcast1.com/daftar-komik/page/${req.query.page || 1}/?genre=${req.query.genre || ""}&order=${req.query.order || ""}&title=${req.query.title || ""}`);
         const $ = cheerio.load(response.data);
         const data = [];
         let gambar;
@@ -57,7 +57,7 @@ app.get("/manga", async (req, res) => {
 
 app.get("/manga/:slug", async (req, res) => {
     try{
-        const response = await axios.get(`https://komikcast.net/komik/${req.params.slug}/`);
+        const response = await axios.get(`https://komikcast1.com/komik/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const chapters = [];
         $(".bxcl.scrolling > ul").find("li").each((index, element) => {
@@ -84,7 +84,7 @@ app.get("/manga/:slug", async (req, res) => {
 
 app.get("/manga/:slug/:chapter", async (req, res) => {
     try{
-        const response = await axios.get(`https://komikcast.net/${req.params.chapter}/`);
+        const response = await axios.get(`https://komikcast1.com/${req.params.chapter}/`);
         const $ = cheerio.load(response.data);
         const data = [];
         $("#anjay_ini_id_kh").find("img").each((index, element) => {
