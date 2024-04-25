@@ -35,6 +35,7 @@ app.get("/genre", async (req, res) => {
 })
 
 app.get("/manga", async (req, res) => {
+    try{
         const response = await axios.get(`https://komikcast1.com/daftar-komik/page/${req.query.page || 1}/?genre=${req.query.genre || ""}&order=${req.query.order || ""}&title=${req.query.title || ""}`);
         const $ = cheerio.load(response.data);
         const data = [];
@@ -49,7 +50,10 @@ app.get("/manga", async (req, res) => {
             });
         });
         return res.json(data);
-    
+    }catch(e){
+        console.log(e)
+        return res.json(e)
+    }
 });
 
 app.get("/manga/:slug", async (req, res) => {
