@@ -82,9 +82,9 @@ app.get("/manga/:slug", async (req, res) => {
         const data = {
             gambar: $(".thumb").find("img").attr("src"),
             nama: ($("h1.entry-title").text()).split("Komik\n")[1],
-            status: ($(".spe > span").eq(1).text()).split("\n")[1],
-            author: ($(".spe > span").eq(3).text()).split("\n")[1],
-            rilis: ($(".spe > span").eq(5).text()).split("\n")[1],
+            status: ($(".col-info-manga-box > span").eq(1).text()).split("\n")[1],
+            author: ($(".col-info-manga-box > span").eq(3).text()).split("\n")[1],
+            rilis: ($(".col-info-manga-box > span").eq(5).text()).split("\n")[1],
             genre: genres.join(","),
             deskripsi: ($(".entry-content.entry-content-single").find("p").text()).replace(/\n/g, " "),
             chapters,
