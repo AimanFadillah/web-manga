@@ -10,7 +10,7 @@ app.use(cors());
 
 const configAxios = axios.create({
     headers:{
-        "User-Agent" : "PostmanRuntime/7.37.3"
+        "User-Agent" : "PostmanRuntime/7.38.0"
     },
     baseURL:"https://komikcast1.com"
 })
@@ -47,13 +47,13 @@ app.get("/manga", async (req, res) => {
         const $ = cheerio.load(response.data);
         const data = [];
         let gambar;
-        $(".film-list").find(".animepost").each((index, element) => {
-            gambar = $(element).find(".animposx > a > div > img").attr("src");
+        $(".arch-list").find(".post-item").each((index, element) => {
+            gambar = $(element).find(".post-item-box > a > div > img").attr("src");
             data.push({
                 gambar: gambar && gambar.includes("?") ? gambar.split("?")[0] : gambar,
-                judul: $(element).find(".animposx > .bigors > a > div > h4").text(),
-                score: $(element).find(".animposx > .bigors > .adds > .rating > i").text(),
-                slug: ($(element).find(".animposx > a").attr("href")).split("/")[4],
+                judul: $(element).find(".post-item-box > a > .post-item-ttl-s > .post-item-title > h4").text(),
+                score: $(element).find(".post-item-box > a > .post-item-ttl-s > .post-item-additio > .rating > i").text(),
+                slug: ($(element).find(".post-item-box > a").attr("href")).split("/")[4],
             });
         });
         return res.json(data);
