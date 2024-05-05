@@ -68,19 +68,24 @@ app.get("/manga/:slug", async (req, res) => {
         const response = await configAxios.get(`/komik/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const chapters = [];
-        $(".bxcl.scrolling > ul").find("li").each((index, element) => {
+        const genres = []
+        $(".box-list-chapter > ul").find("li").each((index, element) => {
             chapters.push({
-                slug: ($(element).find(".lchx > a").attr("href")).split("/")[3],
-                nama: $(element).find(".lchx > a").text().replace(/\n/g, ""),
+                slug: ($(element).find(".list-chapter-chapter > a").attr("href")).split("/")[3],
+                nama: $(element).find(".list-chapter-chapter > a").text().replace(/\n/g, ""),
             })
         });
+        $(".genre-info-manga > a").each((index,element) => {
+            genres.push($(element).text());
+        })
+
         const data = {
             gambar: $(".thumb").find("img").attr("src"),
             nama: ($("h1.entry-title").text()).split("Komik\n")[1],
             status: ($(".spe > span").eq(1).text()).split("\n")[1],
             author: ($(".spe > span").eq(3).text()).split("\n")[1],
             rilis: ($(".spe > span").eq(5).text()).split("\n")[1],
-            genre: ($(".genre-info").text()).replace(/\n/g, " "),
+            genre: genres.join(","),
             deskripsi: ($(".entry-content.entry-content-single").find("p").text()).replace(/\n/g, " "),
             chapters,
         }
