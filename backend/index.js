@@ -12,7 +12,7 @@ const configAxios = axios.create({
     headers:{
         "User-Agent" : "PostmanRuntime/7.38.0"
     },
-    baseURL:"https://komikcast1.com"
+    baseURL:"https://komikcast.cx"
 })
 
 app.get("/search", async (req, res) => {
