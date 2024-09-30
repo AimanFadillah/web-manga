@@ -10,7 +10,7 @@ app.use(cors());
 
 const configAxios = axios.create({
     headers:{
-        "User-Agent" : "PostmanRuntime/7.38.0"
+        "User-Agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
     },
     baseURL:"https://komikcast.one"
 })
